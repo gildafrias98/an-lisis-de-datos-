@@ -1,0 +1,59 @@
+-- =====================================================================
+-- Módulo 3 · Data Analytics -- CoderHouse
+-- Ejercicio: Diseño de tablas para un sistema de gestión de ventas
+-- Autora: Gilda Frías -- Fecha: 8 de julio de 2026
+-- Motor objetivo: PostgreSQL (se aclara en comentarios cómo adaptar
+-- algún tipo de dato si se ejecuta en SQL Server en su lugar).
+-- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- Tabla: clientes
+-- Guarda los datos básicos de cada cliente del sistema de ventas.
+-- ---------------------------------------------------------------------
+CREATE TABLE clientes (
+    id_cliente      INT PRIMARY KEY,
+    -- Número entero simple. Se marca como PRIMARY KEY para que la base
+    -- impida valores duplicados o nulos en el identificador del cliente.
+
+    nombre          VARCHAR(100) NOT NULL,
+    -- Texto de longitud variable, hasta 100 caracteres. Un nombre no
+    -- necesita más espacio, y VARCHAR (a diferencia de CHAR) solo ocupa
+    -- el espacio real del texto cargado, no el máximo declarado.
+
+    perfil_bio      TEXT,
+    -- Texto largo sin límite fijo de caracteres. Una biografía o nota
+    -- puede variar mucho en longitud, así que TEXT evita tener que
+    -- adivinar de antemano un máximo de caracteres.
+    -- (En SQL Server el equivalente recomendado es VARCHAR(MAX)).
+
+    fecha_registro  DATE NOT NULL
+    -- Solo fecha, sin hora. Alcanza con saber el día en que el cliente
+    -- se registró; no se necesita la hora exacta del registro.
+);
+
+-- ---------------------------------------------------------------------
+-- Tabla: productos
+-- Guarda el catálogo de productos disponibles para la venta.
+-- ---------------------------------------------------------------------
+CREATE TABLE productos (
+    id_producto     INT PRIMARY KEY,
+    -- Número entero simple, identificador único de cada producto.
+
+    descripcion     VARCHAR(255) NOT NULL,
+    -- Texto de hasta 255 caracteres: suficiente para describir un
+    -- producto sin reservar espacio de más como un TEXT sin límite.
+
+    precio          DECIMAL(10,2) NOT NULL,
+    -- DECIMAL(10,2) y no FLOAT: el dinero necesita precisión exacta de
+    -- 2 decimales siempre, y FLOAT puede introducir errores de
+    -- redondeo binario inaceptables al trabajar con montos. El (10,2)
+    -- permite precios de hasta 99.999.999,99.
+
+    esta_activo     SMALLINT NOT NULL DEFAULT 1
+    -- Número pequeño (0 = inactivo / no se vende, 1 = activo / a la
+    -- venta) en lugar de texto libre ('si'/'no'), para evitar
+    -- inconsistencias de escritura (mayúsculas, espacios, typos).
+    -- Se eligió SMALLINT en vez de BOOLEAN porque es portable entre
+    -- PostgreSQL y SQL Server (este último no tiene BOOLEAN nativo;
+    -- usaría BIT, con la misma lógica de 0 y 1).
+);
